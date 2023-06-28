@@ -46,6 +46,20 @@ def split_compiler_symbol(x:str)->Tuple[List[str], List[str]]:
     minimal_zlabel = [x[p.start():p.end()] for p in compiler_symbol_re.finditer(x)]
     return other_content,minimal_zlabel
 
+def check_children(x:ZLabel)->bool:
+    if x.children is None:
+        return False
+    elif type(x.children) is list:
+        return False
+    elif type(x.children) is str:
+        if len([ii for ii in compiler_symbol_re.finditer(x.children)])>0:
+            return True
+        else:
+            return False
+    else:
+        return False
+    
+
 def detect_str(x:str)->List[ZLabel]:
     ZL=[]
     ZL_origin = []
@@ -69,16 +83,35 @@ def detect_str(x:str)->List[ZLabel]:
     # handle final x
     # split
     other_content, compiler_symbols = split_compiler_symbol(x)
-    print(other_content)
-    print(compiler_symbols)
+    compiler_symbols = [int(c.replace(LeftSymbol, '').replace(RightSymbol, '')) for c in compiler_symbols]
+    merge_List = []
+    for i in range(len(compiler_symbols)):
+        if not other_content[i] == '':
+            merge_List.append(ZLabel('text',other_content[i]))
+        merge_List.append(ZL[compiler_symbols[i]])
+    out_list = merge_List
+    C_list = merge_List
+    # handle all list
+    goon = any([check_children(c) for c in C_list])
+    while goon:
+        new_list = []
+        for c in C_list:
+            if check_children(c):
+                # split
+                other_content, compiler_symbols = split_compiler_symbol(x)
+                compiler_symbols = [int(c.replace(LeftSymbol, '').replace(RightSymbol, '')) for c in compiler_symbols]
+                merge_List = []
+                for i in range(len(compiler_symbols)):
+                    if not other_content[i] == '':
+                        merge_List.append(ZLabel('text',other_content[i]))
+                    merge_List.append(ZL[compiler_symbols[i]])
+                c.children = merge_List
+                new_list = new_list+c.children
+        C_list = new_list
+        goon = any([check_children(c) for c in C_list])
+    print('----')
 
-    # for p in ZL_origin:
-    #     print(p)
-    # for p in ZL:
-    #     print(p.name)
-    #     print(p.children)
-    # print(x)
-    return [EndLineZLabel()]
+    return out_list
 
 def uniform_line_breaks(x:str)->str:
     x = x.replace('\r\n', '\n')
@@ -121,7 +154,17 @@ pre_funcs = [uniform_line_breaks, remove_typesetting_lf, replace_lf]
 for f in pre_funcs:
     content = f(content)
 
-detect_str(content)
+out_list = detect_str(content)
+
+for o in out_list:
+    if (type(o.children) is None) or (type(o.children) is str):
+        print(o.name, o.children)
+    elif type(o.children) is list:
+        print(o.name)
+        print('----children----')
+        for oo in o.children:
+            print(oo.name, oo.children)
+        print('------------')
 
 with open(outpath, 'w', encoding='utf-8') as f:
     f.write(content)
