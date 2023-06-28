@@ -87,9 +87,11 @@ def expand_ZLabel_List(ZL:List[ZLabel])->str:
                 new_list.append(f'[{z.name}|{z.children}]')
             else:
                 new_list.append(f'[{z.name}|')
-                new_list+z.children
+                new_list = new_list+z.children
+                print(z.children)
                 new_list.append(']')
         ZL = new_list
+        # print(ZL)
     return ''.join(ZL)
 
 def expand_ZLabel(x:ZLabel)->str:
@@ -139,8 +141,8 @@ def detect_str(x:str)->List[ZLabel]:
         for c in C_list:
             if check_children(c):
                 # split
-                other_content, compiler_symbols = split_compiler_symbol(x)
-                compiler_symbols = [int(c.replace(LeftSymbol, '').replace(RightSymbol, '')) for c in compiler_symbols]
+                other_content, compiler_symbols = split_compiler_symbol(c.children)
+                compiler_symbols = [int(cc.replace(LeftSymbol, '').replace(RightSymbol, '')) for cc in compiler_symbols]
                 merge_List = []
                 for i in range(len(compiler_symbols)):
                     if not other_content[i] == '':
@@ -222,4 +224,5 @@ recover = expand_ZLabel_List(out_list)
 recover = recover.replace(EndLineSymbol,EndLineSymbol+'\n')
 
 with open(outpath+'.rec', 'w', encoding='utf-8') as f:
-    f.write(content)
+    f.write(recover)
+    f.write('-------')
