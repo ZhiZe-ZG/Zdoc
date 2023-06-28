@@ -3,6 +3,9 @@ from typing import List, Union, Self,Pattern, Tuple
 import re
 # from functools import cached_property
 
+# import sys
+# sys.setrecursionlimit(100000)
+
 path = './test.zdoc'
 outpath = './test.zdox'
 
@@ -59,6 +62,44 @@ def check_children(x:ZLabel)->bool:
     else:
         return False
     
+def check_expandable(x:str)->bool:
+    return len([ii for ii in compiler_symbol_re.finditer(x)])>0
+
+def check_is_minimal_expand(x:Union[ZLabel, str])->bool:
+    if type(x) is str:
+        return True
+    elif x.children is None:
+        return True
+    elif type(x.children) is str:
+        return True
+    else:
+        return False
+
+def expand_ZLabel_List(ZL:List[ZLabel])->str:
+    while any([(not (type(z) is str)) for z in ZL]):
+        new_list = []
+        for z in ZL:
+            if type(z) is str:
+                new_list.append(z)
+            elif z.children is None:
+                new_list.append(f'[{z.name}|]')
+            elif type(z.children) is str:
+                new_list.append(f'[{z.name}|{z.children}]')
+            else:
+                new_list.append(f'[{z.name}|')
+                new_list+z.children
+                new_list.append(']')
+        ZL = new_list
+    return ''.join(ZL)
+
+def expand_ZLabel(x:ZLabel)->str:
+    if x.children is None:
+        return f'[{x.name}|]'
+    elif type(x.children) is list:
+        return ''.join([expand_ZLabel(z) for z in x.children])
+    else:
+        return f'[{x.name}|{x.children}]'
+        
 
 def detect_str(x:str)->List[ZLabel]:
     ZL=[]
@@ -174,4 +215,11 @@ with open(outpath, 'w', encoding='utf-8') as f:
 content = content.replace(EndLineSymbol,EndLineSymbol+'\n')
 
 with open(outpath+'.show', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+recover = expand_ZLabel_List(out_list)
+
+recover = recover.replace(EndLineSymbol,EndLineSymbol+'\n')
+
+with open(outpath+'.rec', 'w', encoding='utf-8') as f:
     f.write(content)
