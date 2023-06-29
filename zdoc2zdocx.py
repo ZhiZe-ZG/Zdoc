@@ -41,7 +41,7 @@ LeftSymbol = '<==='
 RightSymbol ='===>'
 
 final_re = re.compile(r'')
-compiler_symbol_re = re.compile(r'<===\d+===>')
+compiler_symbol_re = re.compile(LeftSymbol+'\\d+'+RightSymbol)
 
 def split_compiler_symbol(x:str)->Tuple[List[str], List[str]]:
     # split
