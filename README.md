@@ -24,6 +24,11 @@ Another markup language for note.
   * 多文件结构和文件系统访问能力。
   * 内嵌代码块的设定环境运行能力。
 
+## 原则
+
+* 符合 Unicode 标准。
+  * 尽量不使用 Unicode 的控制字符控制格式。
+
 ## Zdoc 语法
 
 ### 字符和编码
