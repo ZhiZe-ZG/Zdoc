@@ -6,8 +6,8 @@ import re
 # import sys
 # sys.setrecursionlimit(100000)
 
-path = './test.zdoc'
-outpath = './test.zdox'
+path = './test/test.zdoc'
+outpath = './test/test.zdox'
 
 class ZLabel:
     def __init__(self, name:str, children:Union[None,List[Self], str]):
@@ -148,6 +148,9 @@ def detect_str(x:str)->List[ZLabel]:
                     if not other_content[i] == '':
                         merge_List.append(ZLabel('text',other_content[i]))
                     merge_List.append(ZL[compiler_symbols[i]])
+                # append last one
+                if not other_content[-1]=='':
+                    merge_List.append(ZLabel('text',other_content[-1]))
                 c.children = merge_List
                 new_list = new_list+c.children
         C_list = new_list
