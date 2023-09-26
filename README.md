@@ -28,6 +28,8 @@ Another markup language for note.
 
 * 符合 Unicode 标准。
   * 尽量不使用 Unicode 的控制字符控制格式。
+  * Unicode 中 ASCII 以外的字符尽量不出现在命名符中，也不作为主要的语法符号。
+  * 可以为 ASCII 之外的 Unicode 提供一定的类推拓展支持，例如数字和字母类推。
 
 ## Zdoc 语法
 
@@ -150,6 +152,13 @@ Hello world!
 * 自由式： `zdoc`
 * 严格式： `zdox`
 * 逻辑式： `xml`
+
+## Reference
+
+* <https://medium.com/@marcelogdeandrade/writing-your-own-programming-language-and-compiler-with-python-a468970ae6df>
+* 关于换行： <https://www.unicode.org/reports/tr14/tr14-51.html> （其中的 6.1 LB5）
+* XML <https://jelks.nu/XML/xmlebnf.html>
+* XML <https://www.w3.org/TR/REC-xml/>
 
 ## To Do
 
