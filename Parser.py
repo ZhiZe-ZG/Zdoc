@@ -1,6 +1,7 @@
 from rply import ParserGenerator
 from AST import Attribute, AttributeList, TagStringList, Tag
 
+
 class Parser:
     def __init__(self):
         self.pg = ParserGenerator(
@@ -23,11 +24,11 @@ class Parser:
         @self.pg.production("tagstringlist : tagstringlist STR")
         def tagstringlist_str(p):
             return TagStringList(p[0].list + [p[1].value])
-        
+
         @self.pg.production("tagstringlist : tagstringlist tag")
         def tagstringlist_tag(p):
             return TagStringList(p[0].list + [p[1]])
-        
+
         @self.pg.production("tag : LSB STR RSB")
         def tag1(p):
             return Tag(p[1].value, [], [])

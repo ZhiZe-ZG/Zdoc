@@ -13,8 +13,8 @@ class Lexer():
         self.lexer.add('VB',r'\s*\|\s*')
         # Equals sign
         self.lexer.add('EQ',r'\s*=\s*')
-        # Any character string (maybe)
-        self.lexer.add('STR',r'[^\[\]\|=]+') # token, digital, new line and space maybe not treat as MSTR
+        # Any character string (except [ | = ])
+        self.lexer.add('STR',r'[^\[\]\|=]+') 
 
     def get_lexer(self):
         self._add_tokens()
